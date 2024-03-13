@@ -137,6 +137,47 @@ class Tree
         return arrayStoreNodeObjects;
     }
 
+    traversalPreOrder(callback = undefined, currentNode = this.root, array = [])
+    {
+        if (currentNode === null)
+        {
+            return array;
+        }
+        if (callback !== undefined)
+        {
+            callback(currentNode.data);
+        }
+        array = this.traversalPreOrder(callback, currentNode.left, array);
+        array = this.traversalPreOrder(callback, currentNode.right, array);
+        if (callback === undefined)
+        {
+            return array;
+        }
+    }
+
+
+    traversalInOrder(callback = undefined, currentNode = this.root, array = []) {
+        if (currentNode === null)
+        {
+            return array;
+        }
+        array = this.traversalInOrder(callback, currentNode.left, array);
+        array.push(currentNode.data);
+        if (callback !== undefined)
+        {
+            callback(currentNode.data);
+        }
+        array = this.traversalInOrder(callback, currentNode.right, array);
+        if (callback === undefined)
+        {
+            return array;
+        }        
+    }
+    
+    traversalPostOrder(currentNode = this.root) { 
+
+    }
+
 }
 
 function findMaxRightNodeLeftTree(currentNode, maxValue = 0)
@@ -187,12 +228,14 @@ const treeTest = new Tree(testArray);
 // treeTest.delete(2);
 // console.log(treeTest.findValue(-1));
 // treeTest.levelOrder(callback);
-treeTest.levelOrderRec(callback);
+// treeTest.levelOrderRec(callback);
+console.log(treeTest.traversalInOrder(callback))
 
 
 function callback(nodeObject)
 {
-    console.log(nodeObject.data);
+    // console.log(nodeObject.data);
+    console.log(nodeObject);
     console.log(' ');
 }
 
