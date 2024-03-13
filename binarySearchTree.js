@@ -18,12 +18,15 @@ class Tree
         this.root = buildTree(array);
     }
 
-    insert(value, currentNode = this.root){
-        if(currentNode === null){
+    insert(value, currentNode = this.root)
+    {
+        if (currentNode === null)
+        {
             const insertNewNodeObject = new Node(value);
             return insertNewNodeObject;
         }
-        if(value < currentNode.data ){
+        if (value < currentNode.data)
+        {
             currentNode.left = this.insert(value, currentNode.left)
         }
         else
@@ -33,23 +36,29 @@ class Tree
         return currentNode;
     }
 
-    delete(value, currentNode = this.root){
-        if(value === currentNode.data){
-            if(currentNode.left === null && currentNode.right === null){
+    delete(value, currentNode = this.root)
+    {
+        if (value === currentNode.data)
+        {
+            if (currentNode.left === null && currentNode.right === null)
+            {
                 return null;
             }
-            else if(currentNode.left === null || currentNode.right === null){
+            else if (currentNode.left === null || currentNode.right === null)
+            {
                 console.log(currentNode.left)
-                return currentNode.left === null? currentNode.right: currentNode.left
+                return currentNode.left === null ? currentNode.right : currentNode.left
             }
-            else if(currentNode.left !== null && currentNode.right !== null){
+            else if (currentNode.left !== null && currentNode.right !== null)
+            {
                 currentNode.data = findMaxRightNodeLeftTree(currentNode.left)
                 console.log(currentNode.data, currentNode.left)
-                currentNode.left = this.delete(currentNode.data,currentNode.left);
-                return currentNode;            
+                currentNode.left = this.delete(currentNode.data, currentNode.left);
+                return currentNode;
             }
         }
-        if(value < currentNode.data ){
+        if (value < currentNode.data)
+        {
             currentNode.left = this.delete(value, currentNode.left)
         }
         else
@@ -58,11 +67,82 @@ class Tree
         }
         return currentNode;
     }
+
+    findValue(value, currentNode = this.root)
+    {
+        if (currentNode === null || value === currentNode.data)
+        {
+            return currentNode === null ? 'Not Found' : currentNode;
+        }
+        if (value > currentNode.data)
+        {
+            return this.findValue(value, currentNode.right)
+        }
+        else
+        {
+            return this.findValue(value, currentNode.left)
+        }
+    }
+    levelOrder(callback)
+    {
+        const arrayQueue = [];
+        const arrayStoreNodeObjects = []
+        arrayQueue.push(this.root);
+        while (arrayQueue.length !== 0)
+        {
+            const currentNode = arrayQueue.shift()
+            if (currentNode.left !== null)
+            {
+                arrayQueue.push(currentNode.left)
+            }
+            if (currentNode.right !== null)
+            {
+                arrayQueue.push(currentNode.right)
+            }
+            if (callback === undefined)
+            {
+                arrayStoreNodeObjects.push(currentNode.data)
+            }
+            else
+            {
+                callback(currentNode);
+            }
+        }
+        return arrayStoreNodeObjects
+    }
+
+    levelOrderRec(callback = undefined, currentNode = this.root, arrayQueue = [], arrayStoreNodeObjects = [])
+    {
+        if (currentNode.left !== null)
+        {
+            arrayQueue.push(currentNode.left)
+        }
+        if (currentNode.right !== null)
+        {
+            arrayQueue.push(currentNode.right)
+        }
+        if (callback === undefined)
+        {
+            arrayStoreNodeObjects.push(currentNode.data)
+        }
+        else
+        {
+            callback(currentNode);
+        }
+        if (arrayQueue.length === 0) // the base case is here
+        {
+            return arrayStoreNodeObjects;
+        }
+        this.levelOrderRec(callback, arrayQueue.shift(), arrayQueue, arrayStoreNodeObjects)
+        return arrayStoreNodeObjects;
+    }
+
 }
 
-function findMaxRightNodeLeftTree(currentNode, maxValue = 0){
-    // if max value is always at the leaf node of the rightmost node of the left subtree just traverse till leaf and return the value? but what if A case where the minimum value is not at the leaf node then i would have to keep comparing every right node of the left sub tree
-    if(currentNode.right === null){
+function findMaxRightNodeLeftTree(currentNode, maxValue = 0)
+{
+    if (currentNode.right === null)
+    {
         return currentNode.data
     }
     return findMaxRightNodeLeftTree(currentNode.right)
@@ -75,7 +155,7 @@ function buildTree(array)
         return null;
     }
     let splitValue = Math.floor(array.length / 2);
-    
+
     const nodeObject = new Node(array[splitValue]);
     const arrayLeft = array.slice(0, splitValue);
     const arrayRight = array.slice(++splitValue, array.length)
@@ -102,9 +182,19 @@ function sortRemoveDuplicates(array)
 let testArray = [1, 2, 3];
 testArray = sortRemoveDuplicates(testArray)
 const treeTest = new Tree(testArray);
-treeTest.insert(0);
-treeTest.insert(-1);
-treeTest.delete(2);
+// treeTest.insert(0);
+// treeTest.insert(5);
+// treeTest.delete(2);
+// console.log(treeTest.findValue(-1));
+// treeTest.levelOrder(callback);
+treeTest.levelOrderRec(callback);
+
+
+function callback(nodeObject)
+{
+    console.log(nodeObject.data);
+    console.log(' ');
+}
 
 // Code from odinProject - BST
 const prettyPrint = (node, prefix = "", isLeft = true) =>
