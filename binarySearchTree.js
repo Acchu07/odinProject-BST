@@ -156,22 +156,17 @@ class Tree
     }
 
 
-    traversalInOrder(callback = undefined, currentNode = this.root, array = []) {
+    traversalInOrder(currentNode = this.root) {
+        const array = []
         if (currentNode === null)
         {
             return array;
         }
-        array = this.traversalInOrder(callback, currentNode.left, array);
+        array.concat(this.traversalInOrder( currentNode.left ));
         array.push(currentNode.data);
-        if (callback !== undefined)
-        {
-            callback(currentNode.data);
-        }
-        array = this.traversalInOrder(callback, currentNode.right, array);
-        if (callback === undefined)
-        {
-            return array;
-        }        
+        array.concat(this.traversalInOrder(currentNode.right));
+        return array;
+       
     }
     
     traversalPostOrder(currentNode = this.root) { 
@@ -229,7 +224,7 @@ const treeTest = new Tree(testArray);
 // console.log(treeTest.findValue(-1));
 // treeTest.levelOrder(callback);
 // treeTest.levelOrderRec(callback);
-console.log(treeTest.traversalInOrder(callback))
+console.log(treeTest.traversalInOrder())
 
 
 function callback(nodeObject)
