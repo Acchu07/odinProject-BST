@@ -17,8 +17,56 @@ class Tree
     {
         this.root = buildTree(array);
     }
+
+    insert(value, currentNode = this.root){
+        if(currentNode === null){
+            const insertNewNodeObject = new Node(value);
+            return insertNewNodeObject;
+        }
+        if(value < currentNode.data ){
+            currentNode.left = this.insert(value, currentNode.left)
+        }
+        else
+        {
+            currentNode.right = this.insert(value, currentNode.right);
+        }
+        return currentNode;
+    }
+
+    delete(value, currentNode = this.root){
+        if(value === currentNode.data){
+            if(currentNode.left === null && currentNode.right === null){
+                return null;
+            }
+            else if(currentNode.left === null || currentNode.right === null){
+                console.log(currentNode.left)
+                return currentNode.left === null? currentNode.right: currentNode.left
+            }
+            else if(currentNode.left !== null && currentNode.right !== null){
+                currentNode.data = findMaxRightNodeLeftTree(currentNode.left)
+                console.log(currentNode.data, currentNode.left)
+                currentNode.left = this.delete(currentNode.data,currentNode.left);
+                return currentNode;            
+            }
+        }
+        if(value < currentNode.data ){
+            currentNode.left = this.delete(value, currentNode.left)
+        }
+        else
+        {
+            currentNode.right = this.delete(value, currentNode.right);
+        }
+        return currentNode;
+    }
 }
 
+function findMaxRightNodeLeftTree(currentNode, maxValue = 0){
+    // if max value is always at the leaf node of the rightmost node of the left subtree just traverse till leaf and return the value? but what if A case where the minimum value is not at the leaf node then i would have to keep comparing every right node of the left sub tree
+    if(currentNode.right === null){
+        return currentNode.data
+    }
+    return findMaxRightNodeLeftTree(currentNode.right)
+}
 
 function buildTree(array)
 {
@@ -50,12 +98,13 @@ function sortRemoveDuplicates(array)
 
 // let testArray = [3,2,9,9,8,8,6,5,10];
 // let testArray = [9,5,3,10];
-let testArray = [1, 2, 3, 4, 5, 6, 9];
-// let testArray = [1, 2, 3];
+// let testArray = [1, 2, 3, 4, 5, 6, 9];
+let testArray = [1, 2, 3];
 testArray = sortRemoveDuplicates(testArray)
 const treeTest = new Tree(testArray);
-
-
+treeTest.insert(0);
+treeTest.insert(-1);
+treeTest.delete(2);
 
 // Code from odinProject - BST
 const prettyPrint = (node, prefix = "", isLeft = true) =>
