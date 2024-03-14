@@ -156,22 +156,99 @@ class Tree
     }
 
 
-    traversalInOrder(currentNode = this.root) {
-        const array = []
-        if (currentNode === null)
+    traversalInOrder(callback = undefined, currentNode = this.root)
+    {
+        if (callback !== undefined)
         {
+            if (currentNode === null)
+            {
+                return;
+            }
+            this.traversalInOrder(callback, currentNode.left)
+            callback(currentNode.data)
+            this.traversalInOrder(callback, currentNode.right)
+        }
+        else
+        {
+            const array = []
+            if (currentNode === null)
+            {
+                return array;
+            }
+            array.push(...this.traversalInOrder(callback, currentNode.left));
+            array.push(currentNode.data);
+            array.push(...this.traversalInOrder(callback, currentNode.right));
             return array;
         }
-        array.concat(this.traversalInOrder( currentNode.left ));
-        array.push(currentNode.data);
-        array.concat(this.traversalInOrder(currentNode.right));
-        return array;
-       
     }
-    
-    traversalPostOrder(currentNode = this.root) { 
+
+    traversalPostOrder(callback = undefined, currentNode = this.root, array = [])
+    {
+        if (currentNode === null)
+        {
+            if (callback)
+            {
+                return
+            }
+            return array;
+        }
+        if (callback)
+        {
+            this.traversalPostOrder(callback, currentNode.left, array)
+            this.traversalPostOrder(callback, currentNode.right, array)
+            return callback(currentNode.data)
+        }
+        array = this.traversalPostOrder(callback, currentNode.left, array)
+        array = this.traversalPostOrder(callback, currentNode.right, array)
+        // code for post order as node is here
+        array.push(currentNode.data);
+        return array;
 
     }
+
+    height(currentNode = this.root, left = 0, right = 0)
+    {
+        if (currentNode === null)
+        {
+            return -1;
+        }
+        left = this.height(currentNode.left, left, right)
+        right = this.height(currentNode.right, left, right)
+        const maxValue = left > right ? left : right;
+        return maxValue + 1;
+    }
+
+    depth(currentNode){
+        if(currentNode === this.root){
+            return 0;
+        }
+        let traversalNode;
+        let arrayTracker = [this.root,'Breaker'];
+        let counter = 0;
+        while(true){
+            if(traversalNode === currentNode){
+                return counter;
+            }
+            if(arrayTracker[0] === 'Breaker'){
+                if(arrayTracker.length === 1){
+                    break;
+                }
+                arrayTracker.push('Breaker');
+                arrayTracker.shift();
+                counter++;
+                continue;
+            }
+            traversalNode = arrayTracker.shift();
+            if(traversalNode.left !== null){
+                arrayTracker.push(traversalNode.left)
+            }
+            if(traversalNode.right !== null){
+                arrayTracker.push(traversalNode.right);
+            }
+        }
+        return 'Not Present';
+    }
+        
 
 }
 
@@ -214,8 +291,8 @@ function sortRemoveDuplicates(array)
 
 // let testArray = [3,2,9,9,8,8,6,5,10];
 // let testArray = [9,5,3,10];
-// let testArray = [1, 2, 3, 4, 5, 6, 9];
-let testArray = [1, 2, 3];
+let testArray = [1, 2, 3, 4, 5, 6, 9, 10];
+// let testArray = [1, 2, 3,0];
 testArray = sortRemoveDuplicates(testArray)
 const treeTest = new Tree(testArray);
 // treeTest.insert(0);
@@ -224,7 +301,6 @@ const treeTest = new Tree(testArray);
 // console.log(treeTest.findValue(-1));
 // treeTest.levelOrder(callback);
 // treeTest.levelOrderRec(callback);
-console.log(treeTest.traversalInOrder())
 
 
 function callback(nodeObject)
@@ -251,4 +327,6 @@ const prettyPrint = (node, prefix = "", isLeft = true) =>
         prettyPrint(node.left, `${prefix}${isLeft ? "    " : "│   "}`, true);
     }
 };
+console.log(treeTest.depth(treeTest.root))
+// console.log(treeTest.root.right)
 prettyPrint(treeTest.root);
