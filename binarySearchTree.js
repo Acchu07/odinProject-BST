@@ -141,18 +141,22 @@ class Tree
     {
         if (currentNode === null)
         {
+            if (callback)
+            {
+                return
+            }
             return array;
         }
-        if (callback !== undefined)
-        {
-            callback(currentNode.data);
+        if (callback){
+            callback(currentNode.data)
+            this.traversalPreOrder(callback, currentNode.left, array)
+            this.traversalPreOrder(callback, currentNode.right, array)
+            return;
         }
+        array.push(currentNode.data);
         array = this.traversalPreOrder(callback, currentNode.left, array);
         array = this.traversalPreOrder(callback, currentNode.right, array);
-        if (callback === undefined)
-        {
-            return array;
-        }
+        return array;
     }
 
 
@@ -200,7 +204,6 @@ class Tree
         }
         array = this.traversalPostOrder(callback, currentNode.left, array)
         array = this.traversalPostOrder(callback, currentNode.right, array)
-        // code for post order as node is here
         array.push(currentNode.data);
         return array;
 
@@ -218,19 +221,25 @@ class Tree
         return maxValue + 1;
     }
 
-    depth(currentNode){
-        if(currentNode === this.root){
+    depth(currentNode)
+    {
+        if (currentNode === this.root)
+        {
             return 0;
         }
         let traversalNode;
-        let arrayTracker = [this.root,'Breaker'];
+        let arrayTracker = [this.root, 'Breaker'];
         let counter = 0;
-        while(true){
-            if(traversalNode === currentNode){
+        while (true)
+        { // rephrase condition
+            if (traversalNode === currentNode)
+            {
                 return counter;
             }
-            if(arrayTracker[0] === 'Breaker'){
-                if(arrayTracker.length === 1){
+            if (arrayTracker[0] === 'Breaker')
+            {
+                if (arrayTracker.length === 1)
+                {
                     break;
                 }
                 arrayTracker.push('Breaker');
@@ -239,17 +248,44 @@ class Tree
                 continue;
             }
             traversalNode = arrayTracker.shift();
-            if(traversalNode.left !== null){
+            if (traversalNode.left !== null)
+            {
                 arrayTracker.push(traversalNode.left)
             }
-            if(traversalNode.right !== null){
+            if (traversalNode.right !== null)
+            {
                 arrayTracker.push(traversalNode.right);
             }
         }
         return 'Not Present';
     }
-        
 
+    isBalanced(currentNode = this.root){
+        if(currentNode === null){
+            return -1;
+        }
+        let left;
+        let right;
+        left = this.isBalanced(currentNode.left)
+        right = this.isBalanced(currentNode.right);
+        
+        let inLeafNode = 1;
+        
+        inLeafNode = inLeafNode + Math.max(left,right);
+        
+        return inLeafNode;    
+    }
+    
+    reBalance(){
+        if(!this.isBalanced()){
+            console.log('notBalanced')
+            this.root = buildTree(this.traversalInOrder());
+            console.log('balanced');
+            return;
+        }
+        console.log('already balanced')
+    }
+    
 }
 
 function findMaxRightNodeLeftTree(currentNode, maxValue = 0)
@@ -286,23 +322,6 @@ function sortRemoveDuplicates(array)
 }
 
 
-
-
-
-// let testArray = [3,2,9,9,8,8,6,5,10];
-// let testArray = [9,5,3,10];
-let testArray = [1, 2, 3, 4, 5, 6, 9, 10];
-// let testArray = [1, 2, 3,0];
-testArray = sortRemoveDuplicates(testArray)
-const treeTest = new Tree(testArray);
-// treeTest.insert(0);
-// treeTest.insert(5);
-// treeTest.delete(2);
-// console.log(treeTest.findValue(-1));
-// treeTest.levelOrder(callback);
-// treeTest.levelOrderRec(callback);
-
-
 function callback(nodeObject)
 {
     // console.log(nodeObject.data);
@@ -310,7 +329,7 @@ function callback(nodeObject)
     console.log(' ');
 }
 
-// Code from odinProject - BST
+// Code from odinProject - BST Visual Print
 const prettyPrint = (node, prefix = "", isLeft = true) =>
 {
     if (node === null)
@@ -327,6 +346,31 @@ const prettyPrint = (node, prefix = "", isLeft = true) =>
         prettyPrint(node.left, `${prefix}${isLeft ? "    " : "│   "}`, true);
     }
 };
-console.log(treeTest.depth(treeTest.root))
-// console.log(treeTest.root.right)
+
+
+
+
+
+// Driver script 
+
+let testArray = [3,2,9,9,8,8,6,5,10,11];
+testArray = sortRemoveDuplicates(testArray)
+const treeTest = new Tree(testArray);
+console.log(treeTest.isBalanced());
+// treeTest.insert(21);
+// treeTest.insert(22);
+// treeTest.insert(23);
+// console.log(treeTest.isBalanced());
+// treeTest.insert(0);
+// treeTest.delete(2);
+// console.log(treeTest.findValue(-1));
+// treeTest.levelOrder(callback);
+// treeTest.levelOrderRec(callback);
+
+
+
+
+// let testArray = [9,5,3,10];
+// let testArray = [1, 2, 3, 4, 5, 6,7,8, 9, 10];
+// let testArray = [1,2,3,4,5,6];
 prettyPrint(treeTest.root);
