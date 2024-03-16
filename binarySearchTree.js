@@ -147,7 +147,8 @@ class Tree
             }
             return array;
         }
-        if (callback){
+        if (callback)
+        {
             callback(currentNode.data)
             this.traversalPreOrder(callback, currentNode.left, array)
             this.traversalPreOrder(callback, currentNode.right, array)
@@ -260,24 +261,50 @@ class Tree
         return 'Not Present';
     }
 
-    isBalanced(currentNode = this.root){
-        if(currentNode === null){
-            return -1;
+    // isBalanced(currentNode = this.root){
+    //     if(currentNode === null){
+    //         return -1;
+    //     }
+    //     let left;
+    //     let right;
+    //     left = this.isBalanced(currentNode.left)
+    //     right = this.isBalanced(currentNode.right);
+
+    //     let inLeafNode = 1;
+    //     inLeafNode = inLeafNode + Math.max(left,right);
+    //     let difference;
+    //     difference = left - right;
+    //     // console.log(difference);
+    //     // console.log(`difference when data point is ${currentNode.data} is ${difference} and leafnode value is ${inLeafNode}`);
+
+    //     return inLeafNode;    
+    // }
+
+    isBalanced(currentNode = this.root)
+    {
+        if (currentNode === null)
+        {
+            return true;
         }
         let left;
         let right;
-        left = this.isBalanced(currentNode.left)
-        right = this.isBalanced(currentNode.right);
-        
-        let inLeafNode = 1;
-        
-        inLeafNode = inLeafNode + Math.max(left,right);
-        
-        return inLeafNode;    
+        left = this.height(currentNode.left)
+        right = this.height(currentNode.right);
+
+        if (Math.abs(left - right) <= 1 &&
+            this.isBalanced(currentNode.left) &&
+            this.isBalanced(currentNode.right))
+        {
+            return true;
+        }
+
+        return false;
     }
-    
-    reBalance(){
-        if(!this.isBalanced()){
+
+    reBalance()
+    {
+        if (!this.isBalanced())
+        {
             console.log('notBalanced')
             this.root = buildTree(this.traversalInOrder());
             console.log('balanced');
@@ -285,7 +312,7 @@ class Tree
         }
         console.log('already balanced')
     }
-    
+
 }
 
 function findMaxRightNodeLeftTree(currentNode, maxValue = 0)
@@ -353,12 +380,16 @@ const prettyPrint = (node, prefix = "", isLeft = true) =>
 
 // Driver script 
 
-let testArray = [3,2,9,9,8,8,6,5,10,11];
+let testArray = [3, 2, 9, 9, 8, 8, 6, 5, 10, 11];
+// let testArray = [3, 1];
 testArray = sortRemoveDuplicates(testArray)
 const treeTest = new Tree(testArray);
+// treeTest.isBalanced()
 console.log(treeTest.isBalanced());
-// treeTest.insert(21);
-// treeTest.insert(22);
+treeTest.insert(0);
+treeTest.insert(-1);
+console.log(treeTest.isBalanced())
+treeTest.reBalance();
 // treeTest.insert(23);
 // console.log(treeTest.isBalanced());
 // treeTest.insert(0);
